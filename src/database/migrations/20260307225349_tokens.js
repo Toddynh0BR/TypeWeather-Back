@@ -2,6 +2,8 @@ exports.up = async function(knex) {
   await knex.schema.createTable("tokens", function(table) {
     table.increments('id');
     table.string('cidade');
+    table.string('lat');
+    table.string('lon');
     table.string('token').notNullable();
     table.boolean('recebe').defaultTo(true);
   });
