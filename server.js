@@ -20,12 +20,17 @@ app.get('/', (req, res) => {
     return res.json('Hello World');
 });
 
+app.post("/ping", (req, res) => {
+  console.log("Keep-alive recebido:", new Date().toISOString());
+  return res.status(200).json({ ok: true });
+});
+
 app.post('/token/add', async (req, res) => {
-    const { token, cidade } = req.body;
+    const { token, cidade, lat, lon } = req.body;
 
     if (!token) throw new Error('Token não recebido');
 
-    console.log('Token e cidade recebidos:', token, cidade);
+    console.log('Token e cidade recebidos:', token, cidade, lat, lon);
     try {
       const TokenExist = await knex('tokens')
                               .where({ token })
@@ -35,7 +40,9 @@ app.post('/token/add', async (req, res) => {
 
       await knex('tokens').insert({
         token,
-        cidade
+        cidade,
+        lat,
+        lon
       });
 
       return res.status(201).json({ message: 'Token cadastrado com sucesso!' });
@@ -46,11 +53,11 @@ app.post('/token/add', async (req, res) => {
 });
 
 app.put('/token/update', async (req, res)=> {
-    const { token_id, cidade, recebe } = req.body;
+    const { token_id, cidade, recebe, lat, lon } = req.body;
 
     if (!token_id || !cidade && !recebe) throw new Error('Informações ausentes');
 
-    console.log('Editando informações de token:', cidade, recebe);
+    console.log('Editando informações de token:', cidade, recebe, lat, lon);
 
     try {
       const Token = await knex('tokens')
@@ -63,7 +70,9 @@ app.put('/token/update', async (req, res)=> {
            .where({ id: token_id })
            .update({
             cidade: cidade || Token.cidade,
-            recebe: recebe ?? Token.recebe
+            recebe: recebe ?? Token.recebe,
+            lat: lat || Token.lat,
+            lon: lon || Token.lon
            });
 
       return res.status(200).json({ message: 'Token atualizado com sucesso!'});
