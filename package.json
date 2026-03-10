@@ -1,0 +1,23 @@
+{
+  "name": "typeweather-back",
+  "version": "1.0.0",
+  "main": "server.js",
+  "keywords": [],
+  "author": "Toddynh0BR",
+  "license": "ISC",
+  "description": "Back-End provedor para o app mobile e website TypeWeather",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "knex": "^3.1.0",
+    "nodemon": "^3.1.14",
+    "sql": "^0.78.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "yarn": "^1.22.22"
+  }
+}
