@@ -56,7 +56,7 @@ app.post('/token/add', async (req, res) => {
 app.put('/token/update', async (req, res)=> {
     const { token, cidade, recebe, lat, lon } = req.body;
 
-    if (!token || !cidade && !recebe) throw new Error('Informações ausentes');
+    if (!token) throw new Error('Informações ausentes');
 
     console.log('Editando informações de token:', cidade, recebe, lat, lon);
 
