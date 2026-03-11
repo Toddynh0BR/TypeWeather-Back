@@ -143,5 +143,65 @@ Velocidade do vento: ${Math.round(clima.current.wind_speed * 3.6)}km\h.
   }
 });
 
+app.get('/teste', async ()=> {
+    console.log('Iniciando envio de notificações');
+
+  try {
+    const tokens = await knex('tokens').where({ recebe: true });
+
+    if (!tokens.length) return console.log('Nenhum token cadastrado ainda.');
+
+    const map = new Map();
+
+    tokens.forEach(item => {
+      if (!map.has(item.cidade)) {
+        map.set(item.cidade, {
+          cidade: item.cidade,
+          tokens: [],
+          lat: item.lat,
+          lon: item.lon
+        });
+      }
+
+      map.get(item.cidade).tokens.push(item.token);
+    });
+
+    const resultado = [...map.values()];
+
+    await Promise.all(
+      resultado.map(async cidade => {
+        const clima = await getWeather(cidade.lat, cidade.lon);
+
+        if (!clima) return;
+
+        const climaDescription = `
+Tempo ${clima.current.weather[0].description} com temperatura de ${Math.trunc(clima.current.temp).toString()}ºc.
+Probalidade de chuva: ${Math.round(clima.daily[0].pop * 100)}%, Umidade do ar: ${clima.current.humidity}%,
+Velocidade do vento: ${Math.round(clima.current.wind_speed * 3.6)}km\h.
+        `
+        await Promise.all(
+          cidade.tokens.map(token =>
+            sendNotification(token, {
+              title: cidade.cidade,
+              body: climaDescription,
+              data: {
+                screen: "result",
+                lat: cidade.lat,
+                lon: cidade.lon
+              }
+            })
+          )
+        );
+
+      })
+
+    );
+
+    console.log("Notificações enviadas com sucesso.");
+  } catch (error) {
+    console.error("Erro ao enviar notificações:", error);
+  }
+})
+
 
 
