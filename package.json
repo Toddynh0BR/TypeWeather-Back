@@ -7,8 +7,9 @@
   "license": "ISC",
   "description": "Back-End provedor para o app mobile TypeWeather",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "knex migrate:latest && node server.js",
+    "dev": "nodemon server.js",
+    "migrate": "knex migrate:latest --env development --knexfile knexfile.js"
   },
   "dependencies": {
     "axios": "^1.13.6",

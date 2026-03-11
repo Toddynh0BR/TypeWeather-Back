@@ -27,6 +27,7 @@ app.post("/ping", (req, res) => {
 
 app.post('/token/add', async (req, res) => {
     const { token, cidade, lat, lon } = req.body;
+    console.log('Informações de token recebidas');
 
     if (!token) throw new Error('Token não recebido');
 
