@@ -148,7 +148,7 @@ Velocidade do vento: ${Math.round(clima.current.wind_speed * 3.6)}km\h.
   }
 });
 
-app.get('/teste', async ()=> {
+app.get('/teste', async (req, res)=> {
     console.log('Iniciando envio de notificações');
 
   try {
@@ -159,6 +159,7 @@ app.get('/teste', async ()=> {
                         .whereNot('lat', '')
                         .whereNot('lon', '');
 
+    console.log('Tokens:', tokens)
     if (!tokens.length) return console.log('Nenhum token cadastrado ainda.');
 
     const map = new Map();
@@ -177,6 +178,7 @@ app.get('/teste', async ()=> {
     });
 
     const resultado = [...map.values()];
+    console.log('Resultado:', resultado)
 
     await Promise.all(
       resultado.map(async cidade => {
@@ -189,6 +191,7 @@ Tempo ${clima.current.weather[0].description} com temperatura de ${Math.trunc(cl
 Probalidade de chuva: ${Math.round(clima.daily[0].pop * 100)}%, Umidade do ar: ${clima.current.humidity}%,
 Velocidade do vento: ${Math.round(clima.current.wind_speed * 3.6)}km\h.
         `
+        console.log(climaDescription)
         await Promise.all(
           cidade.tokens.map(token =>
             sendNotification(token, {
