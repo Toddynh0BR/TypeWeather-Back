@@ -87,7 +87,12 @@ cron.schedule('0 7 * * *', async () => {
   console.log('Iniciando envio de notificações');
 
   try {
-    const tokens = await knex('tokens').where({ recebe: true });
+    const tokens = await knex('tokens')
+                        .where({ recebe: true })
+                        .whereNotNull('lat')
+                        .whereNotNull('lon')
+                        .whereNot('lat', '')
+                        .whereNot('lon', '');
 
     if (!tokens.length) return console.log('Nenhum token cadastrado ainda.');
 
@@ -147,7 +152,12 @@ app.get('/teste', async ()=> {
     console.log('Iniciando envio de notificações');
 
   try {
-    const tokens = await knex('tokens').where({ recebe: true });
+    const tokens = await knex('tokens')
+                        .where({ recebe: true })
+                        .whereNotNull('lat')
+                        .whereNotNull('lon')
+                        .whereNot('lat', '')
+                        .whereNot('lon', '');
 
     if (!tokens.length) return console.log('Nenhum token cadastrado ainda.');
 
@@ -201,7 +211,7 @@ Velocidade do vento: ${Math.round(clima.current.wind_speed * 3.6)}km\h.
   } catch (error) {
     console.error("Erro ao enviar notificações:", error);
   }
-})
+});
 
 
 
