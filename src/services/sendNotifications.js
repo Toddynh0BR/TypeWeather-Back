@@ -10,7 +10,8 @@ async function sendNotification(token, message) {
     throw new Error("Token inválido");
   };
 
-  const notification = {
+ try {
+    const notification = {
     to: token,
     sound: "default",
     title: message.title,
@@ -25,6 +26,10 @@ async function sendNotification(token, message) {
     await expo.sendPushNotificationsAsync(chunk);
   }
   console.log('Enviado')
+ } catch (error) {
+  console.error(error)
+ }
+  
 };
 
 module.exports = sendNotification;
