@@ -54,21 +54,21 @@ app.post('/token/add', async (req, res) => {
 });
 
 app.put('/token/update', async (req, res)=> {
-    const { token_id, cidade, recebe, lat, lon } = req.body;
+    const { token, cidade, recebe, lat, lon } = req.body;
 
-    if (!token_id || !cidade && !recebe) throw new Error('Informações ausentes');
+    if (!token || !cidade && !recebe) throw new Error('Informações ausentes');
 
     console.log('Editando informações de token:', cidade, recebe, lat, lon);
 
     try {
       const Token = await knex('tokens')
-                         .where({ id: token_id })
+                         .where({ token })
                          .first();
 
       if (!Token) return res.status(404).json({ message: 'Token não encontrado' });
 
       await knex('tokens')
-           .where({ id: token_id })
+           .where({ token })
            .update({
             cidade: cidade || Token.cidade,
             recebe: recebe ?? Token.recebe,
