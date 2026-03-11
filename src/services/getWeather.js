@@ -10,7 +10,7 @@ async function GetWeather(lat, lon) {
           lon,
           exclude: 'minutely,hourly',
           lang: 'pt_br',
-          unit: 'metric',
+          units: 'metric',
           appid: "0051ff2b54f1ae466e72cb622eff4bc1",
         }
       }
