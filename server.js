@@ -18,12 +18,12 @@ const getWeather = require('./src/services/getWeather');//Buscar clima
 
 app.get('/', (req, res) => {
     return res.json('Hello World');
-});
+});//Hello World
 
 app.post("/ping", (req, res) => {
   console.log("Keep-alive recebido:", new Date().toISOString());
   return res.status(200).json({ ok: true });
-});
+});//Ping para manter server ativo
 
 app.post('/token/add', async (req, res) => {
     const { token, cidade, lat, lon } = req.body;
@@ -51,7 +51,7 @@ app.post('/token/add', async (req, res) => {
       console.error('Erro ao cadastrar token:', error.message || error);
       return res.status(500).json({ message: 'Erro ao cadastrar token' });
     };
-});
+});//Adição de token
 
 app.put('/token/update', async (req, res)=> {
     const { token, cidade, recebe, lat, lon } = req.body;
@@ -81,75 +81,10 @@ app.put('/token/update', async (req, res)=> {
       console.error('Erro ao atualizar token:', error.message || error);
       return res.status(500).json({ message: 'Erro do servidor ao atualizar token.'});
     };
-});
+});//Atualização de token
 
 cron.schedule('0 7 * * *', async () => {
   console.log('Iniciando envio de notificações');
-
-  try {
-    const tokens = await knex('tokens')
-                        .where({ recebe: true })
-                        .whereNotNull('lat')
-                        .whereNotNull('lon')
-                        .whereNot('lat', '')
-                        .whereNot('lon', '');
-
-    if (!tokens.length) return console.log('Nenhum token cadastrado ainda.');
-
-    const map = new Map();
-
-    tokens.forEach(item => {
-      if (!map.has(item.cidade)) {
-        map.set(item.cidade, {
-          cidade: item.cidade,
-          tokens: [],
-          lat: item.lat,
-          lon: item.lon
-        });
-      }
-
-      map.get(item.cidade).tokens.push(item.token);
-    });
-
-    const resultado = [...map.values()];
-
-    await Promise.all(
-      resultado.map(async cidade => {
-        const clima = await getWeather(cidade.lat, cidade.lon);
-
-        if (!clima) return;
-
-        const climaDescription = `
-Tempo ${clima.current.weather[0].description} com temperatura de ${Math.trunc(clima.current.temp).toString()}ºc.
-Probalidade de chuva: ${Math.round(clima.daily[0].pop * 100)}%, Umidade do ar: ${clima.current.humidity}%,
-Velocidade do vento: ${Math.round(clima.current.wind_speed * 3.6)}km\h.
-        `
-        await Promise.all(
-          cidade.tokens.map(token =>
-            sendNotification(token, {
-              title: cidade.cidade,
-              body: climaDescription,
-              data: {
-                screen: "result",
-                lat: cidade.lat,
-                lon: cidade.lon
-              }
-            })
-          )
-        );
-
-      })
-
-    );
-
-    console.log("Notificações enviadas com sucesso.");
-  } catch (error) {
-    console.error("Erro ao enviar notificações:", error);
-  }
-});
-
-app.get('/teste', async (req, res)=> {
-    console.log('Iniciando envio de notificações');
 
   try {
     const tokens = await knex('tokens')
@@ -187,10 +122,8 @@ app.get('/teste', async (req, res)=> {
         if (!clima) return;
 
         const climaDescription = 
-`Tempo ${clima.current.weather[0].description} com temperatura de ${Math.trunc(clima.current.temp).toString()}ºc.\n 
-Probalidade de chuva: ${Math.round(clima.daily[0].pop * 100)}%, \n
-Umidade do ar: ${clima.current.humidity}%, Velocidade do vento: ${Math.round(clima.current.wind_speed * 3.6)}km/h.`
-        console.log(climaDescription)
+`🌥️Tempo ${clima.current.weather[0].description} com temperatura de ${Math.trunc(clima.current.temp).toString()}ºc.\n 🌧️Probalidade de chuva: ${Math.round(clima.daily[0].pop * 100)}%,\n 💧Umidade do ar: ${clima.current.humidity}%,\n 🌬️Velocidade do vento: ${Math.round(clima.current.wind_speed * 3.6)}km/h.`
+   
         await Promise.all(
           cidade.tokens.map(token =>
             sendNotification(token, {
@@ -209,11 +142,11 @@ Umidade do ar: ${clima.current.humidity}%, Velocidade do vento: ${Math.round(cli
 
     );
 
-    console.log("Notificações enviadas com sucesso.");
   } catch (error) {
     console.error("Erro ao enviar notificações:", error);
   }
-});
+});//Envio de notificações diariamente
+
 
 
 
