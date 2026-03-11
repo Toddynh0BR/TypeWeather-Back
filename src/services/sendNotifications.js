@@ -3,15 +3,14 @@ const { Expo } = require("expo-server-sdk");
 const expo = new Expo()
 
 async function sendNotification(token, message) {
-  console.log('Enviando para:', token)
-  if (!Expo.isExpoPushToken(token)) {
-    console.log('token invalido')
-    await knex('tokens').where({ token }).delete();
-    throw new Error("Token inválido");
-  };
+  console.log("Enviando para:", token);
 
- try {
-    const notification = {
+  if (!Expo.isExpoPushToken(token)) {
+    console.log("Token inválido");
+    return;
+  }
+
+  const notification = {
     to: token,
     sound: "default",
     title: message.title,
@@ -21,15 +20,14 @@ async function sendNotification(token, message) {
   };
 
   const chunks = expo.chunkPushNotifications([notification]);
+  let tickets = [];
 
   for (const chunk of chunks) {
-    await expo.sendPushNotificationsAsync(chunk);
+    const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+    tickets.push(...ticketChunk);
   }
-  console.log('Enviado')
- } catch (error) {
-  console.error(error)
- }
-  
-};
+
+  console.log("Tickets:", tickets);
+}
 
 module.exports = sendNotification;
