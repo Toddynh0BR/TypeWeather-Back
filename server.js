@@ -122,7 +122,7 @@ cron.schedule('0 7 * * *', async () => {
         if (!clima) return;
 
         const climaDescription = 
-`🌥️Tempo ${clima.current.weather[0].description} com temperatura de ${Math.trunc(clima.current.temp).toString()}ºc.\n 🌧️Probalidade de chuva: ${Math.round(clima.daily[0].pop * 100)}%,\n 💧Umidade do ar: ${clima.current.humidity}%,\n 🌬️Velocidade do vento: ${Math.round(clima.current.wind_speed * 3.6)}km/h.`
+`🌥️Tempo ${clima.current.weather[0].description} com temperatura de ${Math.trunc(clima.current.temp).toString()}ºc.\n🌧️Probalidade de chuva: ${Math.round(clima.daily[0].pop * 100)}%,\n💧Umidade do ar: ${clima.current.humidity}%,\n🌬️Velocidade do vento: ${Math.round(clima.current.wind_speed * 3.6)}km/h.`;
    
         await Promise.all(
           cidade.tokens.map(token =>

@@ -17,6 +17,8 @@ async function sendNotification(token, message) {
     body: message.body,
     data: message.data || {},
     priority: "high",
+    ttl: 3600,
+    channelId: "default",
   };
 
   const chunks = expo.chunkPushNotifications([notification]);
