@@ -83,7 +83,7 @@ app.put('/token/update', async (req, res)=> {
     };
 });//Atualização de token
 
-cron.schedule('0 7 * * *', async () => {
+cron.schedule('0 9 * * *', async () => {
   console.log('Iniciando envio de notificações');
 
   try {
@@ -195,6 +195,7 @@ app.get('/teste', async (req, res)=> {
               body: climaDescription,
               data: {
                 screen: "result",
+                name: cidade.cidade,
                 lat: cidade.lat,
                 lon: cidade.lon
               }
